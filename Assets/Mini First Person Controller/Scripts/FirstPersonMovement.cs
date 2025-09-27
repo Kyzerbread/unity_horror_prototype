@@ -4,8 +4,8 @@
 public class FirstPersonMovement : MonoBehaviour
 {
     [Header("Movement")]
-    public float walkSpeed = 5f;
-    public float runSpeed = 8f;
+    public float walkSpeed = 4f;
+    public float runSpeed = 6f;
 
     [Header("Ground Control")]
     public float groundAcceleration = 60f;   // fast acceleration
@@ -25,6 +25,10 @@ public class FirstPersonMovement : MonoBehaviour
 
     private Vector3 velocity;       // total velocity
     private float verticalVel;      // vertical only
+
+    public Vector3 Velocity => velocity;
+    public CharacterController Controller => controller;
+    public bool IsSprinting => input?.IsSprinting ?? false;
 
     private void Awake()
     {

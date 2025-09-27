@@ -12,11 +12,6 @@ public class FirstPersonLook : MonoBehaviour
     private Vector2 velocity;        // accumulated rotation
     private Vector2 frameVelocity;   // smoothed frame rotation
 
-    private void Awake()
-    {
-        
-    }
-
     private void Reset()
     {
         // Automatically grab the parent’s transform if not set
