@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 public class FirstPersonMovement : MonoBehaviour
@@ -7,23 +6,25 @@ public class FirstPersonMovement : MonoBehaviour
     [Header("Movement")]
     public float walkSpeed = 5f;
     public float runSpeed = 8f;
-    public float acceleration = 20f;     // how quickly to build speed
-    public float deceleration = 15f;     // how quickly to stop without input
+
+    [Header("Ground Control")]
+    public float groundAcceleration = 60f;   // fast acceleration
+    public float groundDeceleration = 80f;   // very fast stop
 
     [Header("Air Control")]
     [Range(0f, 1f)]
-    public float airControlMultiplier = 0.2f;
+    public float airControlMultiplier = 0.4f;
 
     [Header("Jump & Gravity")]
     public float jumpHeight = 2f;
     public float gravity = -9.81f;
+    public float massMultiplier = 1.2f;
 
     private CharacterController controller;
     private InputHandler input;
 
-    private Vector3 velocity;        // total velocity (world space)
-    private Vector3 horizontalVel;   // horizontal part only
-    private float verticalVel;       // vertical part only
+    private Vector3 velocity;       // total velocity
+    private float verticalVel;      // vertical only
 
     private void Awake()
     {
@@ -31,48 +32,61 @@ public class FirstPersonMovement : MonoBehaviour
         input = GetComponent<InputHandler>();
     }
 
-    private void OnEnable()
-    {
-        input.JumpPressed += HandleJump;
-    }
-
-    private void OnDisable()
-    {
-        input.JumpPressed -= HandleJump;
-    }
+    private void OnEnable() => input.JumpPressed += HandleJump;
+    private void OnDisable() => input.JumpPressed -= HandleJump;
 
     private void Update()
     {
         bool isGrounded = controller.isGrounded;
 
-        // --- Horizontal movement ---
         Vector2 moveInput = input.MoveInput;
         Vector3 desiredDir = (transform.right * moveInput.x + transform.forward * moveInput.y).normalized;
-
-        // Pick target speed
         float targetSpeed = input.IsSprinting ? runSpeed : walkSpeed;
 
-        // Scale control if in air
-        float control = isGrounded ? 1f : airControlMultiplier;
+        if (isGrounded)
+        {
+            Vector3 horizontal = new Vector3(velocity.x, 0f, velocity.z);
+            Vector3 desiredVel = desiredDir * targetSpeed;
 
-        // Apply acceleration toward desired velocity
-        Vector3 desiredVel = desiredDir * targetSpeed;
-        horizontalVel = Vector3.MoveTowards(horizontalVel, desiredVel, acceleration * control * Time.deltaTime);
+            if (desiredDir.magnitude > 0f)
+            {
+                // Very snappy acceleration
+                horizontal = Vector3.MoveTowards(
+                    horizontal,
+                    desiredVel,
+                    groundAcceleration * Time.deltaTime
+                );
+            }
+            else
+            {
+                // Very snappy deceleration
+                horizontal = Vector3.MoveTowards(
+                    horizontal,
+                    Vector3.zero,
+                    groundDeceleration * Time.deltaTime
+                );
+            }
 
-        // Apply deceleration when no input
-        if (desiredDir == Vector3.zero)
-            horizontalVel = Vector3.MoveTowards(horizontalVel, Vector3.zero, deceleration * control * Time.deltaTime);
+            velocity = new Vector3(horizontal.x, verticalVel, horizontal.z);
 
-        // --- Vertical movement (gravity & jumping) ---
-        if (isGrounded && verticalVel < 0)
-            verticalVel = -2f; // keep grounded
+            if (verticalVel < 0)
+                verticalVel = -2f; // stick to ground
+        }
+        else
+        {
+            // Air inertia with small steering influence
+            Vector3 horizontal = new Vector3(velocity.x, 0f, velocity.z);
+            Vector3 airDesired = desiredDir * targetSpeed;
 
-        verticalVel += gravity * Time.deltaTime;
+            horizontal = Vector3.Lerp(horizontal, airDesired, airControlMultiplier * Time.deltaTime);
 
-        // --- Combine ---
-        velocity = horizontalVel + Vector3.up * verticalVel;
+            velocity = new Vector3(horizontal.x, verticalVel, horizontal.z);
+        }
 
-        // Move controller
+        // Apply gravity
+        verticalVel += gravity * massMultiplier * Time.deltaTime;
+        velocity.y = verticalVel;
+
         controller.Move(velocity * Time.deltaTime);
     }
 
