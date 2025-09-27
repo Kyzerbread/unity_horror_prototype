@@ -5,7 +5,7 @@ public class HealthPackData : Item
 {
     public int healAmount = 25;
 
-    public override bool Use(IInteractor interactor)
+    public override bool OnUse(IInteractor interactor)
     {
         if (interactor.GameObject.TryGetComponent<Health>(out var health))
         {

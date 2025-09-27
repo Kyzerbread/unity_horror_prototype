@@ -25,12 +25,12 @@ public class FirstPersonInteractionObserver : MonoBehaviour, IInteractor
 
     private void OnEnable()
     {
-        input.OnInteract += HandleInteract;
+        input.InteractPressed += HandleInteract;
     }
 
     private void OnDisable()
     {
-        input.OnInteract -= HandleInteract;
+        input.InteractPressed -= HandleInteract;
     }
 
     private void HandleInteract()

@@ -68,18 +68,18 @@ public class FirstPersonAudio : MonoBehaviour
         float velocity = Vector3.Distance(CurrentCharacterPosition, lastCharacterPosition);
         if (velocity >= velocityThreshold && groundCheck && groundCheck.isGrounded)
         {
-            if (crouch)
-            {
-                SetPlayingMovingAudio(crouchedAudio);
-            }
-            else if (character.IsRunning)
-            {
-                SetPlayingMovingAudio(runningAudio);
-            }
-            else
-            {
-                SetPlayingMovingAudio(stepAudio);
-            }
+            //if (crouch)
+            //{
+            //    SetPlayingMovingAudio(crouchedAudio);
+            //}
+            //else if (character.IsRunning)
+            //{
+            //    SetPlayingMovingAudio(runningAudio);
+            //}
+            //else
+            //{
+            //    SetPlayingMovingAudio(stepAudio);
+            //}
         }
         else
         {
@@ -126,7 +126,7 @@ public class FirstPersonAudio : MonoBehaviour
         // PlayJumpAudio when Jumped.
         if (jump)
         {
-            jump.Jumped += PlayJumpAudio;
+            //jump.Jumped += PlayJumpAudio;
         }
 
         // Play crouch audio on crouch start/end.
@@ -145,7 +145,7 @@ public class FirstPersonAudio : MonoBehaviour
         // Undo PlayJumpAudio when Jumped.
         if (jump)
         {
-            jump.Jumped -= PlayJumpAudio;
+            //jump.Jumped -= PlayJumpAudio;
         }
 
         // Undo play crouch audio on crouch start/end.

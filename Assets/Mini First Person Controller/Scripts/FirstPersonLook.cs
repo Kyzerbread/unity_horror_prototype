@@ -1,57 +1,56 @@
 ﻿using UnityEngine;
-[RequireComponent(typeof(InputHandler))]
+
 public class FirstPersonLook : MonoBehaviour
 {
-    [SerializeField] private Transform character;
-    private InputHandler input;
-    private Movement movement;
+    [SerializeField] private Transform character; // the body (with CharacterController)
+    [SerializeField] private InputHandler input;
 
     [Header("Settings")]
-    public float smoothing = 1.5f;
+    public float sensitivity = 2f;   // mouse/gamepad sensitivity
+    public float smoothing = 1.5f;   // higher = smoother, lower = snappier
 
-    private Vector2 velocity;
-    private Vector2 frameVelocity;
+    private Vector2 velocity;        // accumulated rotation
+    private Vector2 frameVelocity;   // smoothed frame rotation
 
     private void Awake()
     {
-        input = GetComponent<InputHandler>();
+        
     }
 
     private void Reset()
     {
-        // Automatically find the character (the body) if not set
+        // Automatically grab the parent’s transform if not set
         var movement = GetComponentInParent<FirstPersonMovement>();
         if (movement != null)
-        {
             character = movement.transform;
-        }
     }
 
     private void Start()
     {
-        // Lock the mouse cursor to the game screen.
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     private void Update()
     {
-        // Use the new Input System LookInput (Vector2)
-        Vector2 mouseDelta = input.LookInput;
+        // Get look input from InputHandler
+        Vector2 lookDelta = input.LookInput;
+
+        // Apply sensitivity
+        Vector2 rawFrameVelocity = lookDelta * sensitivity;
 
         // Smooth the input
-        Vector2 rawFrameVelocity = Vector2.Scale(mouseDelta, Vector2.one);
         frameVelocity = Vector2.Lerp(frameVelocity, rawFrameVelocity, 1f / smoothing);
 
-        // Update velocity (cumulative rotation)
+        // Accumulate total rotation
         velocity += frameVelocity;
-        velocity.y = Mathf.Clamp(velocity.y, -90f, 90f);
+        velocity.y = Mathf.Clamp(velocity.y, -90f, 90f); // clamp pitch
 
-        // Rotate camera up-down and character left-right
-        transform.localRotation = Quaternion.AngleAxis(-velocity.y, Vector3.right); // Pitch
+        // Apply pitch to the camera (this script is on the camera)
+        transform.localRotation = Quaternion.AngleAxis(-velocity.y, Vector3.right);
+
+        // Apply yaw to the character body
         if (character != null)
-        {
-            character.localRotation = Quaternion.AngleAxis(velocity.x, Vector3.up); // Yaw
-        }
+            character.localRotation = Quaternion.AngleAxis(velocity.x, Vector3.up);
     }
 }

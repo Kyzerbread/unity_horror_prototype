@@ -1,41 +1,58 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System;
 
+[RequireComponent(typeof(PlayerInput))]
 public class InputHandler : MonoBehaviour
 {
-    private PlayerControls controls;
-
+    // Continuous state (poll these each frame)
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
     public bool IsSprinting { get; private set; }
-
     public bool IsCrouching { get; private set; }
-    public bool JumpRequested { get; private set; }
-    public event Action OnInteract;
 
-    private void Awake()
+    // Discrete events
+    public event Action JumpPressed;
+    public event Action InteractPressed;
+
+    // --- PlayerInput (Send Messages) will call these by *action name* ---
+
+    // Value (Vector2)
+    public void OnMove(InputValue value)
     {
-        controls = new PlayerControls();
-
-        controls.Player.Move.performed += ctx => MoveInput = ctx.ReadValue<Vector2>();
-        controls.Player.Move.canceled += ctx => MoveInput = Vector2.zero;
-
-        controls.Player.Look.performed += ctx => LookInput = ctx.ReadValue<Vector2>();
-        controls.Player.Look.canceled += ctx => LookInput = Vector2.zero;
-
-        controls.Player.Sprint.performed += ctx => IsSprinting = ctx.ReadValueAsButton();
-        controls.Player.Sprint.canceled += ctx => IsSprinting = false;
-
-        controls.Player.Jump.performed += ctx => JumpRequested = true;
-
-        controls.Player.Interact.performed += ctx => OnInteract?.Invoke();
-
-        controls.Player.Crouch.performed += ctx => IsCrouching = ctx.ReadValueAsButton();
-        controls.Player.Crouch.canceled += ctx => IsCrouching = false;
+        // Will be (0,0) when released; Send Messages fires whenever value changes.
+        MoveInput = value.Get<Vector2>();
     }
 
-    private void OnEnable() => controls.Enable();
-    private void OnDisable() => controls.Disable();
+    // Value (Vector2) — mouse delta / right stick
+    public void OnLook(InputValue value)
+    {
+        LookInput = value.Get<Vector2>();
+    }
 
-    public void ResetJump() => JumpRequested = false;
+    // Button (bool/float) — pressed while held
+    public void OnSprint(InputValue value)
+    {
+        Debug.Log("OnSprint" + value.isPressed.ToString());
+        // For Button actions, isPressed is true when above press threshold.
+        IsSprinting = value.isPressed;
+    }
+
+    // Button (bool/float) — pressed while held
+    public void OnCrouch(InputValue value)
+    {
+        IsCrouching = value.isPressed;
+    }
+
+    // Button — fire once on press (ignore release)
+    public void OnJump(InputValue value)
+    {
+        if (value.isPressed) JumpPressed?.Invoke();
+    }
+
+    // Button — fire once on press (ignore release)
+    public void OnInteract(InputValue value)
+    {
+        if (value.isPressed) InteractPressed?.Invoke();
+    }
 }

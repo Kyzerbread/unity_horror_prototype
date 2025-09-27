@@ -1,0 +1,23 @@
+:root {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 18px;
+}
+
+.ui-container {
+    background-color: rgb(0, 0, 0);
+    opacity: 0.95;
+    color: rgb(255, 255, 255);
+    padding: 8px;
+}
+
+.scrollable-list {
+    border: 1px solid rgb(255, 255, 255);
+    border-top-width: 1px;
+    border-left-width: 1px;
+    border-bottom-width: 1px;
+    border-right-width: 1px;
+    border-right-color: rgb(255, 255, 255);
+    border-top-color: rgb(255, 255, 255);
+    border-left-color: rgb(255, 255, 255);
+    border-bottom-color: rgb(255, 255, 255);
+}
