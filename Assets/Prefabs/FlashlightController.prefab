@@ -110,17 +110,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Version: 3
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
-  m_LightLayerMask: 1
-  m_RenderingLayers: 1
   m_CustomShadowLayers: 0
-  m_ShadowLayerMask: 1
-  m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1 &5362585184761409393
 GameObject:
   m_ObjectHideFlags: 0
@@ -130,7 +136,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8163692723095931172}
-  - component: {fileID: 6393289838338242877}
+  - component: {fileID: 3577082452465797457}
   m_Layer: 0
   m_Name: FlashlightController
   m_TagString: Untagged
@@ -155,7 +161,7 @@ Transform:
   - {fileID: 3471934216211536203}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6393289838338242877
+--- !u!114 &3577082452465797457
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -164,12 +170,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 5362585184761409393}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fa5263b3a356e3419348a3478266ee8, type: 3}
+  m_Script: {fileID: 11500000, guid: fca283a3cbcc05546854edd58b11cafe, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  _onSFX: {fileID: 8300000, guid: c3ac03cbc7cc3db44ab266e2017a118f, type: 3}
+  m_EditorClassIdentifier: Assembly-CSharp::FlashlightController
+  _onSFX: {fileID: 8300000, guid: 0e1f071ac50acdf47a40896ece305dc0, type: 3}
   _offSFX: {fileID: 8300000, guid: 430eff55e0ce48847ad404cc9e60e6a8, type: 3}
   _toggleKey: 102
+  PlayerAudioSource: {fileID: 4244506267892158933}
   IsEnabled: 1
 --- !u!1 &7220078282252374494
 GameObject:
