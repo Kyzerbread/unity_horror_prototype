@@ -2,19 +2,19 @@
 
 public class FirstPersonLook : MonoBehaviour
 {
-    [SerializeField] private Transform character; // the body (with CharacterController)
+    [SerializeField] private Transform character; // player body
     [SerializeField] private InputHandler input;
 
     [Header("Settings")]
-    public float sensitivity = 2f;   // mouse/gamepad sensitivity
-    public float smoothing = 1.5f;   // higher = smoother, lower = snappier
+    public float sensitivity = 2f;          // mouse/gamepad sensitivity
+    public float rotationSmoothTime = 0.03f; // 20–30ms is typical for responsive smoothing
 
-    private Vector2 velocity;        // accumulated rotation
-    private Vector2 frameVelocity;   // smoothed frame rotation
+    private Vector2 targetRotation;   // raw input-driven rotation
+    private Vector2 smoothedRotation; // what we actually apply to camera
+    private Vector2 rotationVelocity; // ref for SmoothDamp
 
     private void Reset()
     {
-        // Automatically grab the parent’s transform if not set
         var movement = GetComponentInParent<FirstPersonMovement>();
         if (movement != null)
             character = movement.transform;
@@ -28,24 +28,29 @@ public class FirstPersonLook : MonoBehaviour
 
     private void Update()
     {
-        // Get look input from InputHandler
-        Vector2 lookDelta = input.LookInput;
+        // --- INPUT ---
+        Vector2 lookDelta = input.LookInput * sensitivity;
 
-        // Apply sensitivity
-        Vector2 rawFrameVelocity = lookDelta * sensitivity;
+        // Update the target rotation instantly (raw input)
+        targetRotation.x += lookDelta.x;
+        targetRotation.y -= lookDelta.y;
+        targetRotation.y = Mathf.Clamp(targetRotation.y, -90f, 90f);
 
-        // Smooth the input
-        frameVelocity = Vector2.Lerp(frameVelocity, rawFrameVelocity, 1f / smoothing);
+        // --- SMOOTHING ---
+        smoothedRotation.x = Mathf.SmoothDamp(
+            smoothedRotation.x, targetRotation.x,
+            ref rotationVelocity.x, rotationSmoothTime);
 
-        // Accumulate total rotation
-        velocity += frameVelocity;
-        velocity.y = Mathf.Clamp(velocity.y, -90f, 90f); // clamp pitch
+        smoothedRotation.y = Mathf.SmoothDamp(
+            smoothedRotation.y, targetRotation.y,
+            ref rotationVelocity.y, rotationSmoothTime);
 
-        // Apply pitch to the camera (this script is on the camera)
-        transform.localRotation = Quaternion.AngleAxis(-velocity.y, Vector3.right);
+        // --- APPLY ---
+        // Pitch (camera only)
+        transform.localRotation = Quaternion.Euler(smoothedRotation.y, 0f, 0f);
 
-        // Apply yaw to the character body
+        // Yaw (character body)
         if (character != null)
-            character.localRotation = Quaternion.AngleAxis(velocity.x, Vector3.up);
+            character.localRotation = Quaternion.Euler(0f, smoothedRotation.x, 0f);
     }
 }
