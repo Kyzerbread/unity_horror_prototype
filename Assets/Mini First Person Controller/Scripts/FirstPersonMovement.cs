@@ -5,7 +5,7 @@ public class FirstPersonMovement : MonoBehaviour
 {
     [Header("Movement")]
     public float walkSpeed = 4f;
-    public float runSpeed = 6f;
+    public float runSpeed = 5.5f;
 
     [Header("Ground Control")]
     public float groundAcceleration = 60f;   // fast acceleration
@@ -16,7 +16,7 @@ public class FirstPersonMovement : MonoBehaviour
     public float airControlMultiplier = 0.4f;
 
     [Header("Jump & Gravity")]
-    public float jumpHeight = 2f;
+    public float jumpHeight = 1.4f;
     public float gravity = -9.81f;
     public float massMultiplier = 1.2f;
 

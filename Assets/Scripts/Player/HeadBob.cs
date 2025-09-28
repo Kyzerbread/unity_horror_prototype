@@ -3,9 +3,9 @@ using UnityEngine;
 public class HeadBob : MonoBehaviour
 {
     [Header("Headbob Settings")]
-    public float baseBobFrequency = 1.5f;   // how fast steps happen
-    public float baseBobAmplitude = 0.05f;  // how high the bob is
-    public float runAmplitudeMultiplier = 1.5f;
+    public float baseBobFrequency = 4f;   // how fast steps happen
+    public float baseBobAmplitude = 0.02f;  // how high the bob is
+    public float runAmplitudeMultiplier = 1.4f;
     public float smoothing = 6f;
 
     [Header("References")]

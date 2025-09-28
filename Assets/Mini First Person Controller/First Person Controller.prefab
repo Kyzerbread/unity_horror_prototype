@@ -254,7 +254,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1130725078037024}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -456,8 +456,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FirstPersonLook
   character: {fileID: 4207293392497186}
   input: {fileID: 2087071255512076555}
-  sensitivity: 2
-  smoothing: 1.5
+  sensitivity: 1
+  rotationSmoothTime: 0.03
 --- !u!1 &1773623360729482
 GameObject:
   m_ObjectHideFlags: 0
@@ -553,12 +553,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97fca36bd81de7c4cafce7bbf02ca611, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 5
-  runSpeed: 9
+  walkSpeed: 3
+  runSpeed: 5
   groundAcceleration: 60
   groundDeceleration: 80
   airControlMultiplier: 0.4
-  jumpHeight: 2
+  jumpHeight: 1.4
   gravity: -9.81
   massMultiplier: 1.2
 --- !u!114 &114762042097486276
@@ -935,8 +935,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82714d6f472cac94680420aa57921710, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HeadBob
-  baseBobFrequency: 1.5
-  baseBobAmplitude: 0.05
+  baseBobFrequency: 5
+  baseBobAmplitude: 0.02
   runAmplitudeMultiplier: 1.5
   smoothing: 6
   movement: {fileID: 114963311885979670}
